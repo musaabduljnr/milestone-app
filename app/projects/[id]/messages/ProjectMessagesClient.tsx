@@ -162,7 +162,7 @@ export const ProjectMessagesClient: React.FC<ProjectMessagesClientProps> = ({
           table: "messages",
           filter: `project_id=eq.${project.id}`,
         },
-        async (payload) => {
+        async (payload: any) => {
           const newMsg = payload.new as Record<string, unknown>;
           // Filter out milestone-specific messages and check duplicates
           if (newMsg.milestone_id || messages.some((m) => m.id === (newMsg.id as string))) return;

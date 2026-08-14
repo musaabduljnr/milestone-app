@@ -73,7 +73,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ activeRole }
           table: "notifications",
           filter: `user_id=eq.${userId}`,
         },
-        (payload) => {
+        (payload: any) => {
           if (payload.eventType === "INSERT") {
             setNotifications((prev) => [payload.new as Notification, ...prev]);
           } else if (payload.eventType === "UPDATE") {

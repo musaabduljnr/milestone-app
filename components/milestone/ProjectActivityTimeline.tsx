@@ -46,7 +46,7 @@ export const ProjectActivityTimeline: React.FC<ProjectActivityTimelineProps> = (
           .eq("project_id", projectId);
 
         // 5. Fetch disputes linked to milestones of this project
-        const milestoneIds = milestones?.map((m) => m.id) || [];
+        const milestoneIds = milestones?.map((m: any) => m.id) || [];
         interface DisputeItem {
           id: string;
           reason: string;

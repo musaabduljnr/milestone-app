@@ -108,7 +108,7 @@ export const MilestoneDiscussion: React.FC<MilestoneDiscussionProps> = ({
           table: "messages",
           filter: `milestone_id=eq.${milestoneId}`,
         },
-        async (payload) => {
+        async (payload: any) => {
           const newMsg = payload.new as Record<string, unknown>;
           
           // Verify if we already have it to prevent duplicates
