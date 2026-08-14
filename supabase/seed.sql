@@ -1,0 +1,99 @@
+-- Milestone Escrow-Backed Marketplace
+-- Development Seeding Template (Phase 2 Setup)
+
+-- INSTRUCTIONS:
+-- 1. Sign up User A (e.g. alexander@milestone.co) and User B (e.g. sarah@jenkins.dev) using the SignUp UI page.
+-- 2. Inspect the auth.users table in your Supabase dashboard to copy their user UUIDs.
+-- 3. Replace 'user-a-client-uuid' and 'user-b-freelancer-uuid' with the respective UUID values in the scripts below, and run the SQL commands in the SQL Editor.
+
+-- STEP 1: NORMALIZE USER PROFILE ROLES & METADATA
+-- UPDATE public.profiles SET role = 'client', verification_status = 'verified', full_name = 'Alexander' WHERE id = 'user-a-client-uuid';
+-- UPDATE public.profiles SET role = 'freelancer', verification_status = 'verified', full_name = 'Sarah Jenkins' WHERE id = 'user-b-freelancer-uuid';
+
+-- STEP 2: ALLOCATE SIMULATED BALANCE CAPS
+-- UPDATE public.wallets SET available_balance = 14250.00, pending_balance = 0.00 WHERE user_id = 'user-a-client-uuid';
+-- UPDATE public.wallets SET available_balance = 8450.00, pending_balance = 3500.00 WHERE user_id = 'user-b-freelancer-uuid';
+
+-- STEP 3: SEED AN ACTIVE CONTRACT PROJECT OWNED BY ALEXANDER
+-- INSERT INTO public.projects (id, client_id, title, description, category, budget, currency, status, expected_completion)
+-- VALUES (
+--   '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
+--   'user-a-client-uuid',
+--   'E-Commerce Mobile App Redesign',
+--   'Redesign checkout interfaces, build custom steppers, and implement secure Supabase authentication APIs.',
+--   'Fintech Core Group',
+--   15000.00,
+--   'USD',
+--   'in_progress',
+--   '2026-10-30'
+-- );
+
+-- STEP 4: ESTABLISH MEMBERSHIP PERMISSIONS FOR SARAH JENKINS
+-- INSERT INTO public.project_members (project_id, user_id, role)
+-- VALUES (
+--   '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
+--   'user-b-freelancer-uuid',
+--   'freelancer'
+-- );
+
+-- STEP 5: DEFINE COMPLETED AND ACTIVE TIMELINE MILESTONES
+-- INSERT INTO public.milestones (id, project_id, title, description, assigned_freelancer_id, payout_amount, deadline, status)
+-- VALUES 
+--   (
+--     'm1111111-1111-1111-1111-111111111111', 
+--     '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 
+--     'Phase 1: Architecture & DB Design', 
+--     'Finalize PostgreSQL schema migrations and construct RLS tables.', 
+--     'user-b-freelancer-uuid', 
+--     4500.00, 
+--     '2026-09-01', 
+--     'PAID'
+--   ),
+--   (
+--     'm2222222-2222-2222-2222-222222222222', 
+--     '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 
+--     'Phase 2: API integrations', 
+--     'Hook up Sign In / Sign Up wizards and enable middleware protected routing.', 
+--     'user-b-freelancer-uuid', 
+--     3500.00, 
+--     '2026-09-20', 
+--     'SUBMITTED'
+--   ),
+--   (
+--     'm3333333-3333-3333-3333-333333333333', 
+--     '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 
+--     'Phase 3: Front-End Assembly', 
+--     'Create layout primitives, dialog overlays, and verification sandbox dashboard previews.', 
+--     'user-b-freelancer-uuid', 
+--     5000.00, 
+--     '2026-10-10', 
+--     'IN_PROGRESS'
+--   ),
+--   (
+--     'm4444444-4444-4444-4444-444444444444', 
+--     '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 
+--     'Phase 4: Launch & Deploy', 
+--     'Validate build checks, clear ESLint warnings, and verify static compilation layouts.', 
+--     'user-b-freelancer-uuid', 
+--     2000.00, 
+--     '2026-10-30', 
+--     'NOT_STARTED'
+--   );
+
+-- STEP 6: BACKFILL THE TRANSACTION LEDGER
+-- INSERT INTO public.escrow_ledger (project_id, milestone_id, amount, entry_type, status)
+-- VALUES
+--   (
+--     '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 
+--     'm1111111-1111-1111-1111-111111111111', 
+--     4500.00, 
+--     'RELEASED', 
+--     'completed'
+--   ),
+--   (
+--     '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', 
+--     'm2222222-2222-2222-2222-222222222222', 
+--     3500.00, 
+--     'HELD', 
+--     'secured'
+--   );

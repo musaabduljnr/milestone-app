@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand Color Tokens */
+  --color-background: #f8f9fa;
+  --color-foreground: #191c1d;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f3f4f5;
+  --color-border: #c3c6d7;
+  
+  --color-primary: #004ac6;
+  --color-primary-foreground: #ffffff;
+  --color-primary-container: #2563eb;
+  --color-on-primary-container: #eeefff;
+
+  --color-secondary: #575e70;
+  --color-secondary-foreground: #ffffff;
+  --color-secondary-container: #d9dff5;
+  --color-on-secondary-container: #5c6274;
+
+  --color-muted: #edeeef;
+  --color-muted-foreground: #434655;
+
+  --color-success: #006242;
+  --color-success-foreground: #ffffff;
+  --color-success-container: #bdffdb;
+  --color-on-success-container: #002113;
+
+  --color-warning: #eab308;
+  --color-warning-foreground: #191c1d;
+
+  --color-error: #ba1a1a;
+  --color-error-foreground: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-info: #2563eb;
+  --color-info-foreground: #ffffff;
+
+  /* Custom Audited M3-styled Colors */
+  --color-surface-dim: #d9dadb;
+  --color-surface-bright: #f8f9fa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f4f5;
+  --color-surface-container: #edeeef;
+  --color-surface-container-high: #e7e8e9;
+  --color-surface-container-highest: #e1e3e4;
+  --color-outline: #737686;
+  --color-outline-variant: #c3c6d7;
+
+  /* Font Families */
+  --font-sans: "Geist", var(--font-geist-sans), sans-serif;
+  --font-mono: "Geist Mono", var(--font-geist-mono), monospace;
+  --font-data-mono: "JetBrains Mono", var(--font-jetbrains-mono), monospace;
+
+  /* Font Sizes */
+  --font-size-display: 48px;
+  --font-size-heading: 32px;
+  --font-size-body: 16px;
+  --font-size-small: 14px;
+  --font-size-caption: 12px;
+  --font-size-label: 12px;
+
+  /* Spacing Scale */
+  --spacing-base: 4px;
+  --spacing-gutter: 24px;
+  --spacing-container-margin: 32px;
+  --spacing-section-gap: 48px;
+  --spacing-card-padding: 24px;
+
+  /* Border Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+
+  /* Shadows */
+  --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Base resets & styles */
+html {
+  font-family: var(--font-sans);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-dim);
+  border-radius: var(--radius-sm);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-outline);
+}
+
+/* Text Selection styling */
+::selection {
+  background-color: rgba(37, 99, 235, 0.15);
+  color: var(--color-primary);
+}
+
+/* Accessibility Focus Ring visible behavior */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Base custom font mappings */
+.font-data-mono {
+  font-family: var(--font-data-mono);
+}
+
+.font-mono-timer {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+/* Shimmer & Glow Effects */
+.ai-shimmer {
+  background: linear-gradient(90deg, rgba(219, 234, 254, 0) 0%, rgba(219, 234, 254, 0.4) 50%, rgba(219, 234, 254, 0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer-anim 2s infinite linear;
+}
+
+@keyframes shimmer-anim {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.ai-glow {
+  animation: pulse-glow 2s infinite alternate;
+}
+
+@keyframes pulse-glow {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.3); }
+  100% { box-shadow: 0 0 10px 4px rgba(37, 99, 235, 0.1); }
+}

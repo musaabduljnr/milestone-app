@@ -1,0 +1,889 @@
+############# UI/UX DESIGN  ############
+
+Design a complete, production-quality responsive web application called “Milestone”.
+
+PRODUCT
+Milestone is a modern escrow-backed project management marketplace connecting clients with freelancers.
+
+A client funds a project upfront, divides the project into milestones, assigns milestones to one or more freelancers, and funds are held in simulated escrow until each milestone is approved.
+
+Milestone lifecycle:
+
+NOT STARTED
+→ IN PROGRESS
+→ SUBMITTED
+→ APPROVED
+→ PAID
+
+Submitted milestones have a 72-hour countdown before automatic release.
+
+If either party opens a dispute, the milestone is frozen and the countdown stops.
+
+IMPORTANT:
+This is an MVP with simulated wallet, simulated escrow and simulated identity verification. Do not design real banking or financial transaction interfaces.
+
+DESIGN DIRECTION
+Create a premium, modern SaaS product that feels like a combination of:
+
+- Linear
+- Stripe
+- Vercel
+- Notion
+- Ramp
+- modern freelance marketplaces
+
+Use a sophisticated bento-grid design language.
+
+The interface should feel:
+- trustworthy
+- premium
+- minimal
+- intelligent
+- modern
+- highly usable
+- professional
+- calm
+- conversion-focused
+
+Avoid:
+- generic dashboard templates
+- excessive gradients
+- excessive glassmorphism
+- cartoon illustrations
+- clutter
+- unnecessary decorative elements
+- overly rounded “startup template” UI
+- excessive colors
+
+Use visual hierarchy and whitespace instead.
+
+DESIGN SYSTEM
+
+Create a consistent design system across the entire application.
+
+Typography:
+Use a modern professional sans-serif such as Inter, Geist, or a similar contemporary UI font.
+
+Typography hierarchy:
+- Large dashboard headings
+- Medium section headings
+- Compact labels
+- Highly readable body text
+- Clear financial/statistical numbers
+
+Spacing:
+Use an 8px spacing system.
+
+Corners:
+Use restrained rounded corners, approximately 10–16px.
+
+Cards:
+Use premium cards with subtle borders, soft shadows where appropriate, and strong internal spacing.
+
+Buttons:
+Use clear primary, secondary, tertiary and destructive variants.
+
+Inputs:
+Large enough for comfortable desktop and mobile use.
+
+Icons:
+Use a consistent minimal line-icon system.
+
+Charts:
+Minimal and informative, never decorative.
+
+Color system:
+Create a sophisticated neutral foundation with one strong brand accent.
+
+Use:
+- light background
+- white/near-white surfaces
+- dark primary text
+- muted secondary text
+- subtle borders
+- green for successful/released/paid states
+- amber for pending/in-progress states
+- red for disputes/errors
+- blue or the chosen brand accent for primary actions
+
+Do not use colors excessively.
+
+BENTO GRID SYSTEM
+
+Use a responsive bento-grid layout for dashboards and information-heavy screens.
+
+Cards should have different visual weights.
+
+Examples:
+- large project overview card
+- medium wallet card
+- milestone progress card
+- activity card
+- deadline card
+- AI assistant card
+- recent messages card
+
+Use asymmetrical but structured layouts.
+
+The bento grid must remain functional rather than decorative.
+
+DESKTOP
+Design primarily for 1280px+ desktop screens.
+
+Use:
+- persistent sidebar
+- spacious content area
+- multi-column bento layouts
+- split panels where appropriate
+- sticky contextual actions when useful
+
+TABLET
+Design for approximately 768px.
+
+Adapt:
+- sidebar to compact/collapsible navigation
+- bento grids to fewer columns
+- tables into responsive cards
+- split views into stacked layouts where necessary
+
+MOBILE WEB
+Design for approximately 390px.
+
+Use:
+- single-column layouts
+- bottom navigation or compact navigation where appropriate
+- stacked cards
+- full-width primary actions
+- horizontally scrollable tabs only when necessary
+- simplified tables
+- full-screen chat
+- optimized forms
+
+Never allow horizontal overflow.
+
+GLOBAL APPLICATION STRUCTURE
+
+Create a consistent application shell.
+
+Desktop:
+------------------------------------------------
+Sidebar
+------------------------------------------------
+Logo: MILESTONE
+
+Navigation:
+
+Overview
+Projects
+Milestones
+Messages
+Wallet
+Activity
+
+Workspace section:
+
+My Projects
+Saved
+
+Bottom:
+
+Help
+Settings
+Profile
+
+Top bar:
+- page title
+- search
+- notifications
+- user avatar/profile menu
+
+Mobile:
+- compact header
+- contextual navigation
+- bottom navigation for the most important sections
+
+AUTHENTICATION
+
+Create polished authentication screens.
+
+1. Welcome / landing
+2. Sign up
+3. Login
+4. Role selection
+5. Identity verification
+6. Verification pending
+7. Verification successful
+
+Role selection:
+
+“I’m a Client”
+Create projects and hire freelancers.
+
+“I’m a Freelancer”
+Work on milestones and get paid.
+
+Use large selectable cards with clear visual hierarchy.
+
+IDENTITY VERIFICATION
+
+Create a clean verification experience.
+
+Screen:
+“Verify your identity”
+
+Fields:
+- Full name
+- Date of birth
+- ID type
+- Upload ID
+
+Show:
+- secure verification explanation
+- upload state
+- pending state
+- verified state
+- error state
+
+Make the experience trustworthy and simple.
+
+CLIENT EXPERIENCE
+
+CLIENT DASHBOARD
+
+Create a premium bento dashboard.
+
+Top:
+“Good morning, [Name]”
+
+Summary cards:
+- Total projects
+- Active projects
+- Funds in escrow
+- Completed milestones
+
+Large bento card:
+Active Projects
+
+Each project card should show:
+- project title
+- freelancer count
+- milestone progress
+- budget
+- next deadline
+- status
+
+Additional cards:
+- Upcoming deadlines
+- Recent activity
+- Wallet balance
+- AI project assistant
+
+Include a prominent CTA:
+
+“Create Project”
+
+CLIENT PROJECT CREATION
+
+Create a multi-step project creation wizard.
+
+Step 1:
+Project basics
+
+- Project title
+- Description
+- Category
+- Expected completion
+
+Step 2:
+Budget
+
+- Total project budget
+- Currency
+- Budget summary
+
+Step 3:
+Milestones
+
+Allow the client to create 2–6 milestones.
+
+Each milestone:
+- title
+- description
+- deadline
+- payout amount
+- freelancer assignment
+
+Show a live budget allocation summary.
+
+Example:
+
+Project Budget
+$5,000
+
+Milestones
+Design — $1,200
+Development — $2,000
+Testing — $800
+Launch — $1,000
+
+Remaining:
+$0
+
+Include an optional AI action:
+
+“Generate milestones with AI”
+
+The AI suggests milestones, deadlines and payout allocations, but the client must review and edit them before confirmation.
+
+Step 4:
+Review & fund
+
+Show:
+- project summary
+- milestones
+- total budget
+- wallet balance
+- amount being placed into simulated escrow
+
+CTA:
+“Fund Project”
+
+FUNDING CONFIRMATION
+
+Create a strong confirmation screen.
+
+Show:
+Project total
+Amount funded
+Wallet balance after funding
+Escrow status
+
+Clearly label the wallet and escrow as simulated MVP functionality.
+
+CLIENT PROJECT DETAIL
+
+This is one of the most important screens.
+
+Create a sophisticated project command center.
+
+Header:
+Project title
+Project status
+Project budget
+Project actions
+
+Use a bento layout containing:
+
+1. Project overview
+2. Milestone progress
+3. Escrow summary
+4. Upcoming deadlines
+5. Freelancers
+6. Recent activity
+
+Milestone timeline:
+
+Not Started
+In Progress
+Submitted
+Approved
+Paid
+
+Show milestone progress visually.
+
+On desktop:
+milestone timeline and escrow information can appear side-by-side.
+
+On mobile:
+stack them vertically.
+
+MILESTONE DETAIL
+
+Create a detailed milestone workspace.
+
+Show:
+- milestone title
+- description
+- assigned freelancer
+- deadline
+- payout
+- status
+- submission date
+- countdown
+
+When submitted:
+
+“Awaiting approval”
+
+Show:
+
+“Automatic release in 71h 42m”
+
+Primary actions:
+
+Approve Milestone
+Open Dispute
+
+Show submitted work and attachments.
+
+APPROVAL FLOW
+
+Create an approval confirmation modal.
+
+Show:
+
+Milestone
+Freelancer
+Amount
+Submission
+Release destination
+
+CTA:
+“Approve & Release”
+
+After approval:
+
+“Milestone Approved”
+
+Status becomes:
+
+PAID
+
+Show updated escrow ledger.
+
+DISPUTE FLOW
+
+Create a clear but calm dispute experience.
+
+Screen/modal:
+
+“Open a dispute”
+
+Fields:
+- Reason
+- Description
+- Evidence
+- Attachments
+
+Warning:
+“Opening a dispute pauses the milestone release process while it is reviewed.”
+
+After submission:
+
+Status:
+DISPUTED
+
+Show:
+- dispute opened
+- countdown frozen
+- evidence
+- review status
+
+FREELANCER EXPERIENCE
+
+FREELANCER DASHBOARD
+
+Create a separate dashboard optimized for freelancers.
+
+Top summary:
+- Active milestones
+- Pending earnings
+- Available balance
+- Completed milestones
+
+Bento cards:
+- Current work
+- Upcoming deadlines
+- Earnings
+- Recent activity
+- Messages
+- AI assistant
+
+CTA:
+“Find Work”
+
+FREELANCER MILESTONE VIEW
+
+Show:
+- project
+- milestone
+- client
+- scope
+- deadline
+- payout
+- progress
+- files
+- conversation
+
+Primary CTA:
+
+“Submit Work”
+
+SUBMIT WORK
+
+Create a polished submission form.
+
+Fields:
+- Submission message
+- Deliverable description
+- File attachments
+- Optional links
+
+Show:
+
+Milestone payout:
+$1,250
+
+After submission:
+
+“Submitted”
+
+“Client has 72 hours to review.”
+
+Show countdown.
+
+Add optional AI action:
+
+“Draft update with AI”
+
+CHAT
+
+Create a professional real-time project chat.
+
+Desktop:
+split view
+
+Left:
+conversation/project list
+
+Right:
+active conversation
+
+Mobile:
+full-screen conversation
+
+Message features:
+- text
+- attachments
+- timestamps
+- read states
+- file previews
+
+Include AI action:
+
+“Draft reply”
+
+The AI should turn rough notes into a professional client-facing update.
+
+WALLET
+
+Create a sophisticated simulated wallet interface.
+
+Important:
+Clearly label this as simulated MVP wallet functionality.
+
+Show:
+
+Available balance
+Funds in escrow
+Pending release
+Total earned
+
+Transaction/escrow ledger:
+
+Date
+Project
+Milestone
+Amount
+Status
+
+Statuses:
+Funded
+Held
+Released
+
+Use clean financial UI similar to modern fintech dashboards.
+
+ESCROW DETAIL
+
+Create a visual escrow breakdown.
+
+Example:
+
+Project Budget
+$5,000
+
+Held in Escrow
+$3,200
+
+Released
+$1,800
+
+Milestone breakdown with status indicators.
+
+MESSAGES
+
+Create a messaging inbox.
+
+Sections:
+- All
+- Unread
+- Projects
+
+Each conversation:
+- avatar
+- project
+- last message
+- timestamp
+- unread indicator
+
+ACTIVITY
+
+Create a clean activity feed.
+
+Events:
+- project created
+- project funded
+- freelancer invited
+- milestone submitted
+- milestone approved
+- funds released
+- dispute opened
+
+SETTINGS
+
+Create settings screens for:
+
+Profile
+Account
+Security
+Notifications
+Verification
+Preferences
+
+Use standard modern SaaS settings patterns.
+
+NOTIFICATIONS
+
+Create:
+- notification center
+- unread states
+- notification preferences
+
+Important notifications:
+- milestone submitted
+- approval required
+- milestone approaching deadline
+- funds released
+- dispute opened
+- project invitation
+
+AI FEATURES
+
+Create an elegant AI assistant experience throughout the product.
+
+Do not make AI visually overwhelming.
+
+AI should feel like an intelligent layer inside Milestone.
+
+Features:
+
+1. AI milestone breakdown
+2. AI status-update drafting
+3. AI scope-creep detection
+
+AI cards should use subtle visual differentiation while remaining consistent with the main design system.
+
+For scope analysis:
+
+Original Scope
+vs
+Submitted Work
+
+AI result:
+
+Aligned
+Potential mismatch
+Needs review
+
+MARKETING / PUBLIC PAGES
+
+Also design the public-facing web experience.
+
+Create:
+
+1. Landing page
+2. How it works
+3. For Clients
+4. For Freelancers
+5. Pricing
+6. FAQ
+7. Login
+8. Signup
+
+LANDING PAGE
+
+Hero:
+
+“Build projects.
+Pay by progress.”
+
+Supporting message explaining Milestone's milestone-based project workflow.
+
+Primary CTA:
+“Start a Project”
+
+Secondary CTA:
+“Work as a Freelancer”
+
+Hero visual:
+Use a sophisticated product dashboard preview rather than a generic illustration.
+
+Use bento sections for:
+
+- Secure milestone workflow
+- Project visibility
+- Escrow tracking
+- Freelancer collaboration
+- AI assistance
+
+Include social-proof/testimonial placeholders but do not invent company logos or fake statistics.
+
+COMPONENT LIBRARY
+
+Create reusable components for:
+
+- Buttons
+- Inputs
+- Selects
+- Dropdowns
+- Cards
+- Bento cards
+- Badges
+- Avatars
+- Navigation
+- Sidebar
+- Bottom navigation
+- Tables
+- Data cards
+- Progress bars
+- Milestone stepper
+- Timeline
+- Modals
+- Drawers
+- Toasts
+- Alerts
+- Empty states
+- Loading skeletons
+- Error states
+- File upload
+- Chat bubbles
+- Countdown timer
+- Wallet cards
+- Escrow ledger
+- AI assistant cards
+
+INTERACTION DESIGN
+
+Design meaningful states for all important components.
+
+Every major workflow should include:
+
+Default
+Hover
+Focus
+Active
+Disabled
+Loading
+Success
+Error
+Empty
+Confirmation
+
+Use subtle transitions.
+
+Avoid excessive animations.
+
+Use motion primarily for:
+- navigation
+- modal transitions
+- status changes
+- progress
+- notifications
+- loading states
+
+ACCESSIBILITY
+
+Follow modern accessibility standards.
+
+Ensure:
+- sufficient color contrast
+- keyboard navigation
+- visible focus states
+- semantic hierarchy
+- accessible forms
+- clear error messages
+- large enough touch targets
+- icons accompanied by meaningful labels where needed
+
+RESPONSIVE DESIGN RULES
+
+Do not simply scale desktop down.
+
+Adapt the information architecture.
+
+Desktop:
+Dense information
+Multi-column bento grids
+Side navigation
+Split views
+
+Tablet:
+Reduced columns
+Collapsible navigation
+Adaptive cards
+
+Mobile:
+Single column
+Prioritize critical information
+Stack sections
+Full-width actions
+Simplified navigation
+
+IMPORTANT DESIGN PRINCIPLES
+
+1. Build a cohesive design system before individual screens.
+2. Reuse components aggressively.
+3. Keep financial information extremely clear.
+4. Make project/milestone status immediately understandable.
+5. Make the approval/release workflow impossible to misunderstand.
+6. Make client and freelancer experiences feel related but distinct.
+7. Use bento layouts where they improve information hierarchy.
+8. Prioritize usability over decoration.
+9. Make every screen feel production-ready.
+10. Maintain consistent spacing, typography, iconography and interaction patterns across the entire product.
+
+FINAL OUTPUT
+
+Generate the complete Milestone web design system and all major web application screens described above.
+
+Create a cohesive, production-ready responsive design system that can later be implemented in Next.js + React + Tailwind CSS.
+
+The design should be detailed enough that an AI coding agent can use the Stitch screens as the source of truth for implementation.
+
+Do not generate random screens that are not part of the product.
+
+Do not invent business features outside the scope described above.
+
+Prioritize the core product loop:
+
+Client
+→ Create Project
+→ Create Milestones
+→ Fund Project
+→ Freelancer Works
+→ Submit Milestone
+→ Client Reviews
+→ Approve / Dispute
+→ Release
+→ Freelancer Paid
