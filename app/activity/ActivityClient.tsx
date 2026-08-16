@@ -50,12 +50,25 @@ interface ActivityDispute {
   resolved_at: string | null;
 }
 
+interface ActivityInvitation {
+  id: string;
+  project_id: string;
+  milestone_id: string;
+  invitee_email: string;
+  status: string;
+  created_at: string;
+  responded_at: string | null;
+  invitee?: { full_name: string } | { full_name: string }[] | null;
+  milestone?: { title: string } | { title: string }[] | null;
+}
+
 interface ActivityData {
   projects: ActivityProject[];
   members: ActivityMember[];
   milestones: ActivityMilestone[];
   escrow: ActivityEscrow[];
   disputes: ActivityDispute[];
+  invitations?: ActivityInvitation[];
 }
 
 interface ActivityClientProps {
@@ -233,6 +246,42 @@ export default function ActivityClient({
           title: "Dispute Resolved",
           description: desc,
           created_at: d.resolved_at,
+        });
+      }
+    });
+
+    // 6. Project Invitations
+    (initialData.invitations || []).forEach((inv) => {
+      const project = projectMap.get(inv.project_id);
+      const projName = project ? `for "${project.title}"` : "";
+      const rawInvitee = Array.isArray(inv.invitee) ? inv.invitee[0] : inv.invitee;
+      const rawMilestone = Array.isArray(inv.milestone) ? inv.milestone[0] : inv.milestone;
+      const inviteeDisplay = rawInvitee?.full_name || inv.invitee_email;
+      const milestoneTitle = rawMilestone?.title || "Milestone";
+
+      timelineList.push({
+        id: `invitation-send-${inv.id}`,
+        type: "ASSIGN",
+        title: "Freelancer Invited",
+        description: `Client invited ${inviteeDisplay} to work on "${milestoneTitle}" ${projName}.`,
+        created_at: inv.created_at,
+      });
+
+      if (inv.status === "ACCEPTED" && inv.responded_at) {
+        timelineList.push({
+          id: `invitation-accept-${inv.id}`,
+          type: "APPROVE",
+          title: "Invitation Accepted",
+          description: `${inviteeDisplay} accepted the invitation for "${milestoneTitle}" ${projName}.`,
+          created_at: inv.responded_at,
+        });
+      } else if (inv.status === "DECLINED" && inv.responded_at) {
+        timelineList.push({
+          id: `invitation-decline-${inv.id}`,
+          type: "DISPUTE",
+          title: "Invitation Declined",
+          description: `${inviteeDisplay} declined the invitation for "${milestoneTitle}" ${projName}.`,
+          created_at: inv.responded_at,
         });
       }
     });

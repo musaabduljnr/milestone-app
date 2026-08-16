@@ -8,11 +8,14 @@ export type EscrowEntryType = "FUNDED" | "HELD" | "RELEASED";
 export type EscrowEntryStatus = "completed" | "secured" | "processing" | "failed";
 export type DisputeStatus = "OPEN" | "RESOLVED";
 
+export type InvitationStatus = "PENDING" | "ACCEPTED" | "DECLINED" | "CANCELLED";
+
 /**
  * 1. Profiles Table
  */
 export interface Profile {
   id: string; // references auth.users.id
+  email?: string | null;
   full_name: string;
   avatar_url?: string | null;
   role?: UserRole | null;
@@ -132,4 +135,20 @@ export interface Dispute {
   status: DisputeStatus;
   created_at: string;
   resolved_at?: string | null;
+}
+
+/**
+ * 10. Project Invitations Table (Phase 10A)
+ */
+export interface ProjectInvitation {
+  id: string;
+  project_id: string; // references public.projects.id
+  milestone_id: string; // references public.milestones.id
+  invited_by: string; // references public.profiles.id
+  invitee_email: string;
+  invitee_user_id?: string | null; // references public.profiles.id
+  status: InvitationStatus;
+  created_at: string;
+  responded_at?: string | null;
+  expires_at?: string | null;
 }

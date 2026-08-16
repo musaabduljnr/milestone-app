@@ -70,6 +70,7 @@ export default async function ActivityPage() {
     { data: milestones },
     { data: escrow },
     { data: disputes },
+    { data: invitations },
   ] = await Promise.all([
     supabase
       .from("projects")
@@ -98,6 +99,10 @@ export default async function ActivityPage() {
           .in("project_id", userProjectIds)
           .then((res) => (res.data || []).map((m) => m.id))),
       ]),
+    supabase
+      .from("project_invitations")
+      .select("id, project_id, milestone_id, invitee_email, status, created_at, responded_at, invitee:invitee_user_id(full_name), milestone:milestone_id(title)")
+      .in("project_id", userProjectIds),
   ]);
 
   return (
@@ -110,6 +115,7 @@ export default async function ActivityPage() {
         milestones: milestones || [],
         escrow: escrow || [],
         disputes: disputes || [],
+        invitations: (invitations || []) as any,
       }}
     />
   );

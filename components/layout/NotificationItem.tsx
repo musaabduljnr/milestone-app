@@ -28,6 +28,18 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({ notification
     icon = "chat";
     iconColor = "text-primary";
     bgClass = "bg-primary-container/15";
+  } else if (notification.type === "PROJECT_INVITATION" || notification.type.includes("INVITATION_RECEIVED")) {
+    icon = "mark_email_unread";
+    iconColor = "text-primary";
+    bgClass = "bg-primary-container/15";
+  } else if (notification.type === "INVITATION_ACCEPTED") {
+    icon = "person_add";
+    iconColor = "text-success";
+    bgClass = "bg-success-container/10";
+  } else if (notification.type === "INVITATION_DECLINED") {
+    icon = "person_remove";
+    iconColor = "text-error";
+    bgClass = "bg-error-container/10";
   } else if (notification.type.includes("APPROV") || notification.type.includes("RELEASE") || notification.type.includes("PAID")) {
     icon = "check_circle";
     iconColor = "text-success";

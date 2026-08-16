@@ -122,7 +122,9 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ activeRole }
     }
 
     // Navigate to path
-    if (notif.milestone_id) {
+    if (notif.type === "PROJECT_INVITATION" || notif.type.includes("INVITATION_RECEIVED")) {
+      router.push(`/invitations/${notif.milestone_id || notif.project_id}`);
+    } else if (notif.milestone_id) {
       if (activeRole === "freelancer") {
         router.push(`/freelancer/milestones/${notif.milestone_id}`);
       } else {

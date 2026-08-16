@@ -74,19 +74,27 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
           </h3>
           
           {milestones.map((m, index) => {
-            const assignee = freelancers.find((f) => f.id === m.assigned_freelancer_id);
+            const assigneeFromList = freelancers.find((f) => f.id === m.assigned_freelancer_id);
+            const assigneeName = m.assigned_freelancer_name || assigneeFromList?.full_name || null;
+            const assigneeEmail = m.assigned_freelancer_email || assigneeFromList?.email || null;
+            const hasAssignee = Boolean(assigneeName || assigneeEmail || m.assigned_freelancer_id);
+
             return (
               <div
                 key={index}
                 className="p-4 rounded-xl border border-outline-variant bg-surface flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
               >
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-body-base text-body-sm font-semibold text-on-surface">
-                    Phase {index + 1}: {m.title}
-                  </h4>
-                  <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                    {m.description}
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-body-base text-body-sm font-semibold text-on-surface truncate">
+                      Phase {index + 1}: {m.title}
+                    </h4>
+                  </div>
+                  {m.description && (
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                      {m.description}
+                    </p>
+                  )}
                   <div className="flex items-center gap-4 mt-2 text-[10px] text-muted-foreground font-medium flex-wrap">
                     <span className="flex items-center gap-1">
                       <span className="material-symbols-outlined text-[12px]">calendar_today</span>
@@ -94,7 +102,14 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
                     </span>
                     <span className="flex items-center gap-1">
                       <span className="material-symbols-outlined text-[12px]">person</span>
-                      Assignee: {assignee ? assignee.full_name : "Unassigned"}
+                      Assignee:{" "}
+                      {hasAssignee ? (
+                        <span className="text-primary font-semibold">
+                          {assigneeName || assigneeEmail} (Pending Invitation)
+                        </span>
+                      ) : (
+                        <span className="text-secondary font-medium">Unassigned</span>
+                      )}
                     </span>
                   </div>
                 </div>
@@ -117,9 +132,10 @@ export const ReviewStep: React.FC<ReviewStepProps> = ({
           variant="primary"
           onClick={onSubmit}
           isLoading={isSubmitting}
+          disabled={isSubmitting}
           className="px-6"
         >
-          Create Project
+          {isSubmitting ? "Creating Project..." : "Create Project"}
         </Button>
       </div>
     </div>

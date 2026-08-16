@@ -65,6 +65,30 @@ export default async function DashboardPage() {
 
   // 3. Fetch real project rows from database with milestones and team memberships
   let rawProjects: DbProject[] = [];
+  interface DbPendingInvitation {
+    id: string;
+    project_id: string;
+    milestone_id: string;
+    created_at: string;
+    projects: {
+      id: string;
+      title: string;
+      currency: string;
+      client_id: string;
+      profiles: {
+        full_name: string;
+        avatar_url: string | null;
+      } | null;
+    } | null;
+    milestones: {
+      id: string;
+      title: string;
+      payout_amount: number;
+      deadline: string | null;
+    } | null;
+  }
+  let pendingInvitations: DbPendingInvitation[] = [];
+
   if (profile.role === "client") {
     const { data } = await supabase
       .from("projects")
@@ -82,22 +106,53 @@ export default async function DashboardPage() {
     rawProjects = data || [];
   } else {
     // If freelancer, retrieve projects where they are member participants
-    const { data } = await supabase
-      .from("project_members")
-      .select(`
-        project_id,
-        projects(
-          *,
-          milestones(*),
-          project_members(
-            user_id,
-            role,
-            profiles(full_name, avatar_url)
+    const [projectsRes, invitationsRes] = await Promise.all([
+      supabase
+        .from("project_members")
+        .select(`
+          project_id,
+          projects(
+            *,
+            milestones(*),
+            project_members(
+              user_id,
+              role,
+              profiles(full_name, avatar_url)
+            )
           )
-        )
-      `)
-      .eq("user_id", user.id);
-    rawProjects = (data || []).map((d) => d.projects as unknown as DbProject).filter(Boolean);
+        `)
+        .eq("user_id", user.id),
+      supabase
+        .from("project_invitations")
+        .select(`
+          id,
+          project_id,
+          milestone_id,
+          created_at,
+          projects:project_id (
+            id,
+            title,
+            currency,
+            client_id,
+            profiles:client_id (
+              full_name,
+              avatar_url
+            )
+          ),
+          milestones:milestone_id (
+            id,
+            title,
+            payout_amount,
+            deadline
+          )
+        `)
+        .eq("status", "PENDING")
+        .or(`invitee_user_id.eq.${user.id},invitee_email.ilike.${user.email}`)
+        .order("created_at", { ascending: false }),
+    ]);
+
+    rawProjects = (projectsRes.data || []).map((d) => d.projects as unknown as DbProject).filter(Boolean);
+    pendingInvitations = (invitationsRes.data || []) as unknown as DbPendingInvitation[];
   }
 
   return (
@@ -145,6 +200,66 @@ export default async function DashboardPage() {
             </div>
           </div>
         </Card>
+
+        {/* Pending Invitations Section (Freelancer view) */}
+        {profile.role === "freelancer" && pendingInvitations.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2 px-1">
+              <span className="material-symbols-outlined text-primary text-[20px]">
+                mail
+              </span>
+              <h2 className="font-headline-sm text-body-base font-bold text-on-surface">
+                Pending Project Invitations ({pendingInvitations.length})
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {pendingInvitations.map((inv) => {
+                const clientName = inv.projects?.profiles?.full_name || "Project Client";
+                const payout = inv.milestones?.payout_amount
+                  ? `$${Number(inv.milestones.payout_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}`
+                  : "$0.00";
+
+                return (
+                  <Card
+                    key={inv.id}
+                    className="p-5 border-primary/30 bg-primary-container/5 hover:border-primary transition-all flex flex-col justify-between gap-4 shadow-sm"
+                  >
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="text-[10px] text-primary font-bold uppercase tracking-wider">
+                          Milestone Invitation
+                        </span>
+                        <Badge variant="info" className="text-[10px] py-0 px-2">
+                          Pending Response
+                        </Badge>
+                      </div>
+
+                      <h3 className="font-body-base text-body-sm font-bold text-on-surface truncate">
+                        {inv.projects?.title || "Project"}
+                      </h3>
+
+                      <p className="text-xs text-secondary line-clamp-1">
+                        Milestone: <strong className="text-on-surface">{inv.milestones?.title}</strong>
+                      </p>
+
+                      <div className="flex items-center justify-between text-xs text-muted-foreground mt-1 pt-2 border-t border-outline-variant/30">
+                        <span>From: <strong className="text-on-surface">{clientName}</strong></span>
+                        <span className="font-data-mono font-bold text-primary">{payout}</span>
+                      </div>
+                    </div>
+
+                    <Link href={`/invitations/${inv.id}`}>
+                      <Button variant="primary" size="sm" className="w-full text-xs">
+                        Review Invitation
+                      </Button>
+                    </Link>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Dynamic Project Content section */}
         <div className="flex flex-col gap-4">

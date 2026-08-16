@@ -135,7 +135,27 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
     };
   });
 
-  // 6. Map database milestone statuses to stepper status constraints
+  // 6. Fetch pending invitations for this project
+  const { data: projectInvitations } = await supabase
+    .from("project_invitations")
+    .select("id, milestone_id, invitee_email, status, invitee_user_id, profiles:invitee_user_id(full_name)")
+    .eq("project_id", id)
+    .eq("status", "PENDING");
+
+  interface PendingInvItem {
+    id: string;
+    milestone_id: string;
+    invitee_email: string;
+    status: string;
+    profiles?: { full_name: string } | { full_name: string }[] | null;
+  }
+
+  const pendingInvitationMap = ((projectInvitations || []) as unknown as PendingInvItem[]).reduce((acc, inv) => {
+    acc[inv.milestone_id] = inv;
+    return acc;
+  }, {} as Record<string, PendingInvItem>);
+
+  // 7. Map database milestone statuses to stepper status constraints
   const stepperSteps: MilestoneStep[] = milestonesList.map((m) => {
     let stepperStatus: MilestoneStep["status"] = "not_started";
     if (m.status === "PAID" || m.status === "APPROVED") {
@@ -230,6 +250,9 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
               </h3>
               {milestonesList.map((m, index) => {
                 const assignee = memberProfiles.find((f) => f.id === m.assigned_freelancer_id);
+                const pendingInv = pendingInvitationMap[m.id];
+                const rawInvProfile = Array.isArray(pendingInv?.profiles) ? pendingInv.profiles[0] : pendingInv?.profiles;
+                const pendingName = rawInvProfile?.full_name || pendingInv?.invitee_email || "Freelancer";
                 
                 let badgeVariant: "neutral" | "success" | "warning" | "error" = "neutral";
                 if (m.status === "PAID" || m.status === "APPROVED" || m.status === "AUTO_RELEASED") badgeVariant = "success";
@@ -259,7 +282,16 @@ export default async function ProjectDetailPage({ params }: ProjectDetailProps) 
                           </span>
                           <span className="flex items-center gap-1">
                             <span className="material-symbols-outlined text-[12px]">person</span>
-                            Assignee: {assignee ? assignee.full_name : "Unassigned"}
+                            Assignee:{" "}
+                            {assignee ? (
+                              <strong className="text-on-surface font-semibold">{assignee.full_name}</strong>
+                            ) : pendingInv ? (
+                              <span className="text-primary font-semibold">
+                                {pendingName} (Pending invitation)
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground">Unassigned</span>
+                            )}
                           </span>
                         </div>
                       </div>

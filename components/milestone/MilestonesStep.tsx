@@ -14,12 +14,17 @@ export interface MilestoneStepData {
   payout_amount: number;
   deadline: string; // ISO date YYYY-MM-DD
   assigned_freelancer_id?: string | null;
+  assigned_freelancer_email?: string | null;
+  assigned_freelancer_name?: string | null;
+  assigned_freelancer_avatar?: string | null;
 }
 
 export interface FreelancerProfile {
   id: string;
   full_name: string;
+  email?: string | null;
   avatar_url?: string | null;
+  verification_status?: string | null;
 }
 
 export interface MilestonesStepProps {
