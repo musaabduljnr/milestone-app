@@ -77,48 +77,42 @@ export default function CreateProjectWizard({
     setSubmissionState("SUBMITTING");
     setErrorMsg(null);
 
-    // Validate milestone deadlines before parsing
-    for (let i = 0; i < milestones.length; i++) {
-      const m = milestones[i];
-      if (!m.deadline || !m.deadline.trim()) {
-        setErrorMsg(`Please set a deadline for Milestone ${i + 1} ("${m.title}").`);
-        setSubmissionState("ERROR");
-        return;
-      }
-      if (!m.title || !m.title.trim()) {
-        setErrorMsg(`Milestone ${i + 1} requires a valid title.`);
-        setSubmissionState("ERROR");
-        return;
-      }
-      if (m.payout_amount <= 0) {
-        setErrorMsg(`Milestone ${i + 1} requires a payout amount greater than 0.`);
-        setSubmissionState("ERROR");
-        return;
-      }
-    }
-
-    // Format milestones payloads safely
-    const formattedMilestones = milestones.map((m) => {
-      let isoDeadline = m.deadline;
-      try {
-        if (!m.deadline.includes("T")) {
-          isoDeadline = new Date(m.deadline).toISOString();
-        }
-      } catch {
-        isoDeadline = new Date().toISOString();
-      }
-
-      return {
-        title: m.title.trim(),
-        description: (m.description || "").trim(),
-        payout_amount: m.payout_amount,
-        deadline: isoDeadline,
-        assigned_freelancer_id: m.assigned_freelancer_id || null,
-        assigned_freelancer_email: m.assigned_freelancer_email || null,
-      };
-    });
-
     try {
+      // Validate milestone deadlines before parsing
+      for (let i = 0; i < milestones.length; i++) {
+        const m = milestones[i];
+        if (!m.deadline || !m.deadline.trim()) {
+          throw new Error(`Please set a deadline for Milestone ${i + 1} ("${m.title}").`);
+        }
+        if (!m.title || !m.title.trim()) {
+          throw new Error(`Milestone ${i + 1} requires a valid title.`);
+        }
+        if (m.payout_amount <= 0) {
+          throw new Error(`Milestone ${i + 1} requires a payout amount greater than 0.`);
+        }
+      }
+
+      // Format milestones payloads safely
+      const formattedMilestones = milestones.map((m) => {
+        let isoDeadline = m.deadline;
+        try {
+          if (!m.deadline.includes("T")) {
+            isoDeadline = new Date(m.deadline).toISOString();
+          }
+        } catch {
+          isoDeadline = new Date().toISOString();
+        }
+
+        return {
+          title: m.title.trim(),
+          description: (m.description || "").trim(),
+          payout_amount: m.payout_amount,
+          deadline: isoDeadline,
+          assigned_freelancer_id: m.assigned_freelancer_id || null,
+          assigned_freelancer_email: m.assigned_freelancer_email || null,
+        };
+      });
+
       const response = await createProjectAction({
         title: basics.title.trim(),
         description: basics.description.trim(),
@@ -130,17 +124,17 @@ export default function CreateProjectWizard({
       });
 
       if (!response.success) {
-        setErrorMsg(
+        throw new Error(
           response.error ||
             "Something went wrong while creating your project. Your project was not created."
         );
-        setSubmissionState("ERROR");
-      } else if (response.projectId) {
+      }
+
+      if (response.projectId) {
         setCreatedProjectId(response.projectId);
         setSubmissionState("SUCCESS");
       } else {
-        setErrorMsg("Failed to verify created project record.");
-        setSubmissionState("ERROR");
+        throw new Error("Failed to verify created project record.");
       }
     } catch (err) {
       console.error("Project submission error:", err);

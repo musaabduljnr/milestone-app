@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 /**
  * Sign up action registering a user via email/password.
@@ -105,6 +106,9 @@ export async function selectRoleAction(role: "client" | "freelancer") {
   if (profileError) {
     return { success: false, error: profileError.message };
   }
+
+  // Clear path cache to ensure client role is read freshly on redirect
+  revalidatePath("/", "layout");
 
   return { success: true, redirect: "/dashboard" };
 }

@@ -306,7 +306,7 @@ export async function getInvitationDetailsAction(id: string) {
   }
 
   // Query invitation by ID or milestone_id for current user
-  let query = supabase
+  const query = supabase
     .from("project_invitations")
     .select(`
       *,

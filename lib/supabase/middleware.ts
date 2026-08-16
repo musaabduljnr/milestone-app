@@ -24,6 +24,9 @@ export async function updateSession(request: NextRequest) {
           );
         },
       },
+      global: {
+        fetch: (url, options) => fetch(url, { ...options, cache: "no-store" }),
+      },
     }
   );
 
