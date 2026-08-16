@@ -230,13 +230,7 @@ create policy "Allow owners to delete projects"
 -- 3. Project Members Policies
 create policy "Allow members select membership info"
   on public.project_members for select
-  using (
-    auth.uid() = user_id or
-    exists (
-      select 1 from public.projects p 
-      where p.id = project_id and p.client_id = auth.uid()
-    )
-  );
+  using (auth.uid() is not null);
 
 create policy "Allow project owners to invite/remove members"
   on public.project_members for all

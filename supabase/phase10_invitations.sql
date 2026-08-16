@@ -583,11 +583,15 @@ create policy "Allow profile read if own or authenticated"
 drop policy if exists "Allow members select membership info" on public.project_members;
 create policy "Allow members select membership info"
   on public.project_members for select
-  using (
-    auth.uid() = user_id or
-    exists (
-      select 1 from public.projects p 
-      where p.id = project_id and p.client_id = auth.uid()
-    )
-  );
+  using (auth.uid() is not null);
+
+-- Explicitly grant permissions to ensure tables/functions are exposed in schema cache
+grant all privileges on table public.project_invitations to postgres, anon, authenticated, service_role;
+grant all privileges on all tables in schema public to postgres, anon, authenticated, service_role;
+grant all privileges on all sequences in schema public to postgres, anon, authenticated, service_role;
+grant all privileges on all functions in schema public to postgres, anon, authenticated, service_role;
+
+-- Force PostgREST schema cache reload
+notify pgrst, 'reload schema';
+
 
