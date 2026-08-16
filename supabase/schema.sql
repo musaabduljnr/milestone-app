@@ -192,7 +192,7 @@ alter table public.project_invitations enable row level security;
 -- 1. Profiles Policies
 create policy "Allow profile read if own or authenticated"
   on public.profiles for select
-  using (auth.uid() = id);
+  using (auth.uid() is not null);
 
 create policy "Allow own profile update"
   on public.profiles for update
@@ -231,13 +231,10 @@ create policy "Allow owners to delete projects"
 create policy "Allow members select membership info"
   on public.project_members for select
   using (
+    auth.uid() = user_id or
     exists (
       select 1 from public.projects p 
       where p.id = project_id and p.client_id = auth.uid()
-    ) or
-    exists (
-      select 1 from public.project_members pm 
-      where pm.project_id = project_id and pm.user_id = auth.uid()
     )
   );
 

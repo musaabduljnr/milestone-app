@@ -572,3 +572,22 @@ begin
   );
 end;
 $$ language plpgsql security definer;
+
+-- Fix profiles select RLS policy (allow reading basic profiles for authenticated users)
+drop policy if exists "Allow profile read if own or authenticated" on public.profiles;
+create policy "Allow profile read if own or authenticated"
+  on public.profiles for select
+  using (auth.uid() is not null);
+
+-- Fix projects/project_members infinite recursion RLS bug
+drop policy if exists "Allow members select membership info" on public.project_members;
+create policy "Allow members select membership info"
+  on public.project_members for select
+  using (
+    auth.uid() = user_id or
+    exists (
+      select 1 from public.projects p 
+      where p.id = project_id and p.client_id = auth.uid()
+    )
+  );
+
