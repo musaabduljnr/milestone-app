@@ -2,7 +2,7 @@
 
 import React from "react";
 import { AppShell } from "@/components/layout/AppShell";
-import { signOutAction, selectRoleAction } from "@/app/auth/actions";
+import { signOutAction } from "@/app/auth/actions";
 import { Card } from "@/components/ui/Card";
 import { ActivityEvent, ActivityItem } from "@/components/milestone/ActivityItem";
 
@@ -88,23 +88,8 @@ export default function ActivityClient({
   userEmail,
   initialData,
 }: ActivityClientProps) {
-  const [role, setRole] = React.useState<"client" | "freelancer">(profile.role);
-  const [isPending, startTransition] = React.useTransition();
-
-  // Filter state
+  // Filter state — drives the activity category tabs
   const [filterType, setFilterType] = React.useState<"all" | "escrow" | "milestone" | "dispute" | "members">("all");
-
-  const handleRoleSwitch = (newRole: "client" | "freelancer") => {
-    if (isPending) return;
-    setRole(newRole);
-    startTransition(async () => {
-      try {
-        await selectRoleAction(newRole);
-      } catch (err) {
-        console.error("Failed to switch database profile role:", err);
-      }
-    });
-  };
 
   const initials = profile.full_name
     ? profile.full_name
@@ -307,8 +292,7 @@ export default function ActivityClient({
 
   return (
     <AppShell
-      activeRole={role}
-      onRoleSwitch={handleRoleSwitch}
+      activeRole={profile.role}
       activeMenuLabel="Activity"
       userName={profile.full_name}
       userEmail={userEmail}

@@ -115,6 +115,7 @@ export default async function ActivityPage() {
         milestones: milestones || [],
         escrow: escrow || [],
         disputes: disputes || [],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         invitations: (invitations || []) as any,
       }}
     />

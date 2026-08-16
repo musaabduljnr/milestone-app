@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/layout/AppShell";
-import { signOutAction, selectRoleAction } from "@/app/auth/actions";
+import { signOutAction } from "@/app/auth/actions";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -28,25 +28,10 @@ export default function ProjectsClient({
   userEmail,
   initialProjects,
 }: ProjectsClientProps) {
-  const [role, setRole] = React.useState<"client" | "freelancer">(profile.role);
-  const [isPending, startTransition] = React.useTransition();
-
   // Search & Filter state
   const [search, setSearch] = React.useState("");
   const [category, setCategory] = React.useState("all");
   const [statusTab, setStatusTab] = React.useState<"all" | "draft" | "in_progress" | "completed" | "disputed">("all");
-
-  const handleRoleSwitch = (newRole: "client" | "freelancer") => {
-    if (isPending) return;
-    setRole(newRole);
-    startTransition(async () => {
-      try {
-        await selectRoleAction(newRole);
-      } catch (err) {
-        console.error("Failed to switch database profile role:", err);
-      }
-    });
-  };
 
   const initials = profile.full_name
     ? profile.full_name
@@ -76,8 +61,7 @@ export default function ProjectsClient({
 
   return (
     <AppShell
-      activeRole={role}
-      onRoleSwitch={handleRoleSwitch}
+      activeRole={profile.role}
       activeMenuLabel="Projects"
       userName={profile.full_name}
       userEmail={userEmail}

@@ -73,6 +73,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({ activeRole }
           table: "notifications",
           filter: `user_id=eq.${userId}`,
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (payload: any) => {
           if (payload.eventType === "INSERT") {
             setNotifications((prev) => [payload.new as Notification, ...prev]);

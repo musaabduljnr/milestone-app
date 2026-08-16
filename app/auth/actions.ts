@@ -77,7 +77,8 @@ export async function signOutAction() {
 }
 
 /**
- * Updates the profile role select for the authenticated user.
+ * Sets the profile role for a newly registered user.
+ * Role is an account-level identity and may only be set ONCE during onboarding.
  * Returns a result object — navigation is handled client-side.
  */
 export async function selectRoleAction(role: "client" | "freelancer") {
@@ -97,7 +98,20 @@ export async function selectRoleAction(role: "client" | "freelancer") {
     return { success: false, redirect: "/auth/login" };
   }
 
-  // Update profile role in user profiles database
+  // Check if a role has already been set — role is immutable after onboarding
+  const { data: existing } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (existing?.role) {
+    // Role already set — do not allow switching
+    revalidatePath("/", "layout");
+    return { success: true, redirect: "/dashboard" };
+  }
+
+  // Persist the role for the first time
   const { error: profileError } = await supabase
     .from("profiles")
     .update({ role })
@@ -107,7 +121,7 @@ export async function selectRoleAction(role: "client" | "freelancer") {
     return { success: false, error: profileError.message };
   }
 
-  // Clear path cache to ensure client role is read freshly on redirect
+  // Clear path cache to ensure fresh role is read on redirect
   revalidatePath("/", "layout");
 
   return { success: true, redirect: "/dashboard" };

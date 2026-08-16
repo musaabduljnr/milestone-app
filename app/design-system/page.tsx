@@ -134,7 +134,7 @@ export default function DesignSystemPage() {
   };
 
   return (
-    <AppShell activeRole={role} onRoleSwitch={setRole} activeMenuLabel="Overview">
+    <AppShell activeRole={role} activeMenuLabel="Overview">
       <div className="flex flex-col gap-8 pb-12">
         {/* Verification Overview Section */}
         <div className="flex flex-col gap-4">

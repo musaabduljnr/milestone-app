@@ -2,7 +2,7 @@
 
 import React from "react";
 import { AppShell } from "@/components/layout/AppShell";
-import { signOutAction, selectRoleAction } from "@/app/auth/actions";
+import { signOutAction } from "@/app/auth/actions";
 
 export interface DashboardClientProps {
   profile: {
@@ -21,21 +21,6 @@ export default function DashboardClient({
   userEmail,
   children,
 }: DashboardClientProps) {
-  const [role, setRole] = React.useState<"client" | "freelancer">(profile.role);
-  const [isPending, startTransition] = React.useTransition();
-
-  const handleRoleSwitch = (newRole: "client" | "freelancer") => {
-    if (isPending) return;
-    setRole(newRole);
-    startTransition(async () => {
-      try {
-        await selectRoleAction(newRole);
-      } catch (err) {
-        console.error("Failed to switch database profile role:", err);
-      }
-    });
-  };
-
   const initials = profile.full_name
     ? profile.full_name
         .split(" ")
@@ -46,8 +31,7 @@ export default function DashboardClient({
 
   return (
     <AppShell
-      activeRole={role}
-      onRoleSwitch={handleRoleSwitch}
+      activeRole={profile.role}
       activeMenuLabel="Overview"
       userName={profile.full_name}
       userEmail={userEmail}

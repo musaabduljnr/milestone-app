@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/layout/AppShell";
-import { signOutAction, selectRoleAction } from "@/app/auth/actions";
+import { signOutAction } from "@/app/auth/actions";
 import { updateProfileSettings } from "./actions";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -35,27 +35,12 @@ export default function SettingsClient({
   profile,
   userEmail,
 }: SettingsClientProps) {
-  const [role, setRole] = React.useState<"client" | "freelancer">(profile.role);
-  const [isPending, startTransition] = React.useTransition();
-
   // Form states
   const [fullName, setFullName] = React.useState(profile.full_name || "");
   const [avatarUrl, setAvatarUrl] = React.useState(profile.avatar_url || "");
   const [isSaving, setIsSaving] = React.useState(false);
   const [successMsg, setSuccessMsg] = React.useState<string | null>(null);
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
-
-  const handleRoleSwitch = (newRole: "client" | "freelancer") => {
-    if (isPending) return;
-    setRole(newRole);
-    startTransition(async () => {
-      try {
-        await selectRoleAction(newRole);
-      } catch (err) {
-        console.error("Failed to switch database profile role:", err);
-      }
-    });
-  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,8 +75,7 @@ export default function SettingsClient({
 
   return (
     <AppShell
-      activeRole={role}
-      onRoleSwitch={handleRoleSwitch}
+      activeRole={profile.role}
       activeMenuLabel="Settings"
       userName={fullName}
       userEmail={userEmail}

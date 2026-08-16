@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/layout/AppShell";
-import { signOutAction, selectRoleAction } from "@/app/auth/actions";
+import { signOutAction } from "@/app/auth/actions";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -27,26 +27,11 @@ export default function MilestonesClient({
   userEmail,
   initialMilestones,
 }: MilestonesClientProps) {
-  const [role, setRole] = React.useState<"client" | "freelancer">(profile.role);
-  const [isPending, startTransition] = React.useTransition();
-
   // Search & Filter state
   const [search, setSearch] = React.useState("");
   const [statusTab, setStatusTab] = React.useState<
     "all" | "NOT_STARTED" | "IN_PROGRESS" | "SUBMITTED" | "PAID" | "DISPUTED"
   >("all");
-
-  const handleRoleSwitch = (newRole: "client" | "freelancer") => {
-    if (isPending) return;
-    setRole(newRole);
-    startTransition(async () => {
-      try {
-        await selectRoleAction(newRole);
-      } catch (err) {
-        console.error("Failed to switch database profile role:", err);
-      }
-    });
-  };
 
   const initials = profile.full_name
     ? profile.full_name
@@ -73,8 +58,7 @@ export default function MilestonesClient({
 
   return (
     <AppShell
-      activeRole={role}
-      onRoleSwitch={handleRoleSwitch}
+      activeRole={profile.role}
       activeMenuLabel="Milestones"
       userName={profile.full_name}
       userEmail={userEmail}

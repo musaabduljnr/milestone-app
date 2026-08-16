@@ -16,7 +16,6 @@ export interface SidebarItem {
 export interface AppShellProps {
   children: React.ReactNode;
   activeRole: "client" | "freelancer";
-  onRoleSwitch?: (role: "client" | "freelancer") => void;
   activeMenuLabel?: string;
   userName?: string;
   userEmail?: string;
@@ -28,7 +27,6 @@ export interface AppShellProps {
 export const AppShell: React.FC<AppShellProps> = ({
   children,
   activeRole,
-  onRoleSwitch,
   activeMenuLabel = "Overview",
   userName,
   userEmail,
@@ -47,12 +45,6 @@ export const AppShell: React.FC<AppShellProps> = ({
     { label: "Activity", icon: "history", href: "/activity", active: activeMenuLabel === "Activity" },
     { label: "Settings", icon: "settings", href: "/settings", active: activeMenuLabel === "Settings" },
   ];
-
-  const handleRoleToggle = () => {
-    if (onRoleSwitch) {
-      onRoleSwitch(activeRole === "client" ? "freelancer" : "client");
-    }
-  };
 
   const renderSidebarContent = () => (
     <div className="flex flex-col h-full bg-secondary dark:bg-on-secondary-fixed text-white p-6 justify-between select-none">
@@ -95,23 +87,6 @@ export const AppShell: React.FC<AppShellProps> = ({
 
       {/* Bottom Section */}
       <div className="flex flex-col gap-6">
-        {/* Switch Role Trigger */}
-        {onRoleSwitch && (
-          <button
-            onClick={handleRoleToggle}
-            className="flex items-center justify-between px-4 py-3 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors w-full text-left"
-          >
-            <div className="flex flex-col">
-              <span className="text-[10px] text-secondary-container font-semibold uppercase tracking-wider">
-                Viewing Workspace As
-              </span>
-              <span className="font-body-sm text-body-sm font-bold capitalize mt-0.5">
-                {activeRole}
-              </span>
-            </div>
-            <span className="material-symbols-outlined text-secondary-container">sync_alt</span>
-          </button>
-        )}
 
         {/* User Card */}
         <div className="flex flex-col gap-4 border-t border-white/10 pt-5">

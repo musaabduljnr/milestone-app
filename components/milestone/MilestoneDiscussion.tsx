@@ -108,6 +108,7 @@ export const MilestoneDiscussion: React.FC<MilestoneDiscussionProps> = ({
           table: "messages",
           filter: `milestone_id=eq.${milestoneId}`,
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         async (payload: any) => {
           const newMsg = payload.new as Record<string, unknown>;
           
