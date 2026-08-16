@@ -232,14 +232,33 @@ create policy "Allow members select membership info"
   on public.project_members for select
   using (auth.uid() is not null);
 
-create policy "Allow project owners to invite/remove members"
-  on public.project_members for all
+create policy "Allow project owners to insert members"
+  on public.project_members for insert
+  with check (
+    exists (
+      select 1 from public.projects p 
+      where p.id = project_id and p.client_id = auth.uid()
+    )
+  );
+
+create policy "Allow project owners to update members"
+  on public.project_members for update
   using (
     exists (
       select 1 from public.projects p 
       where p.id = project_id and p.client_id = auth.uid()
     )
   );
+
+create policy "Allow project owners to delete members"
+  on public.project_members for delete
+  using (
+    exists (
+      select 1 from public.projects p 
+      where p.id = project_id and p.client_id = auth.uid()
+    )
+  );
+
 
 -- 4. Milestones Policies
 create policy "Allow milestoness select for project participants"

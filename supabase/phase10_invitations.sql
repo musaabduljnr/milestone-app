@@ -591,7 +591,38 @@ grant all privileges on all tables in schema public to postgres, anon, authentic
 grant all privileges on all sequences in schema public to postgres, anon, authenticated, service_role;
 grant all privileges on all functions in schema public to postgres, anon, authenticated, service_role;
 
+-- Fix project_members FOR ALL policy recursion by splitting it into distinct INSERT, UPDATE, and DELETE policies
+drop policy if exists "Allow project owners to invite/remove members" on public.project_members;
+
+create policy "Allow project owners to insert members"
+  on public.project_members for insert
+  with check (
+    exists (
+      select 1 from public.projects p 
+      where p.id = project_id and p.client_id = auth.uid()
+    )
+  );
+
+create policy "Allow project owners to update members"
+  on public.project_members for update
+  using (
+    exists (
+      select 1 from public.projects p 
+      where p.id = project_id and p.client_id = auth.uid()
+    )
+  );
+
+create policy "Allow project owners to delete members"
+  on public.project_members for delete
+  using (
+    exists (
+      select 1 from public.projects p 
+      where p.id = project_id and p.client_id = auth.uid()
+    )
+  );
+
 -- Force PostgREST schema cache reload
 notify pgrst, 'reload schema';
+
 
 
