@@ -621,6 +621,47 @@ create policy "Allow project owners to delete members"
     )
   );
 
+-- Fix projects/milestones select policies to allow invited freelancers to view them before accepting
+drop policy if exists "Allow select projects owned or joined" on public.projects;
+create policy "Allow select projects owned or joined"
+  on public.projects for select
+  using (
+    auth.uid() = client_id or
+    exists (
+      select 1 from public.project_members pm 
+      where pm.project_id = id and pm.user_id = auth.uid()
+    ) or
+    exists (
+      select 1 from public.project_invitations pi
+      where pi.project_id = id and (
+        pi.invitee_user_id = auth.uid() or
+        lower(pi.invitee_email) = lower(auth.jwt()->>'email')
+      )
+    )
+  );
+
+drop policy if exists "Allow milestoness select for project participants" on public.milestones;
+create policy "Allow milestoness select for project participants"
+  on public.milestones for select
+  using (
+    assigned_freelancer_id = auth.uid() or
+    exists (
+      select 1 from public.projects p 
+      where p.id = project_id and p.client_id = auth.uid()
+    ) or
+    exists (
+      select 1 from public.project_members pm 
+      where pm.project_id = project_id and pm.user_id = auth.uid()
+    ) or
+    exists (
+      select 1 from public.project_invitations pi
+      where pi.milestone_id = id and (
+        pi.invitee_user_id = auth.uid() or
+        lower(pi.invitee_email) = lower(auth.jwt()->>'email')
+      )
+    )
+  );
+
 -- Force PostgREST schema cache reload
 notify pgrst, 'reload schema';
 

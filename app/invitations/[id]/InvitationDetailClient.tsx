@@ -266,9 +266,11 @@ export default function InvitationDetailClient({
                 </span>
                 <span className="font-data-mono text-headline-sm font-bold text-primary block mt-0.5">
                   {project?.currency || "USD"}{" "}
-                  {milestone?.payout_amount?.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                  })}
+                  {milestone?.payout_amount !== undefined && milestone?.payout_amount !== null
+                    ? Number(milestone.payout_amount).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                      })
+                    : "0.00"}
                 </span>
               </div>
             </div>

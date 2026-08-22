@@ -206,6 +206,13 @@ create policy "Allow select projects owned or joined"
     exists (
       select 1 from public.project_members pm 
       where pm.project_id = id and pm.user_id = auth.uid()
+    ) or
+    exists (
+      select 1 from public.project_invitations pi
+      where pi.project_id = id and (
+        pi.invitee_user_id = auth.uid() or
+        lower(pi.invitee_email) = lower(auth.jwt()->>'email')
+      )
     )
   );
 
@@ -272,6 +279,13 @@ create policy "Allow milestoness select for project participants"
     exists (
       select 1 from public.project_members pm 
       where pm.project_id = project_id and pm.user_id = auth.uid()
+    ) or
+    exists (
+      select 1 from public.project_invitations pi
+      where pi.milestone_id = id and (
+        pi.invitee_user_id = auth.uid() or
+        lower(pi.invitee_email) = lower(auth.jwt()->>'email')
+      )
     )
   );
 
