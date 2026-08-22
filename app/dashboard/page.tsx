@@ -326,7 +326,7 @@ export default async function DashboardPage() {
                       totalMilestonesCount={totalM}
                       nextDeadline={project.expected_completion ? new Date(project.expected_completion).toLocaleDateString() : undefined}
                       team={teamMembers}
-                      onClick={() => {}}
+                      isInteractive={true}
                     />
                   </Link>
                 );

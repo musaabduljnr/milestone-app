@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Card } from "@/components/ui/Card";
 import { Avatar, AvatarGroup } from "@/components/ui/Avatar";
@@ -21,6 +23,7 @@ export interface ProjectCardProps {
   nextDeadline?: string;
   team: ProjectTeamMember[];
   onClick?: () => void;
+  isInteractive?: boolean;
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -34,10 +37,11 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
   nextDeadline,
   team,
   onClick,
+  isInteractive,
 }) => {
   return (
     <Card
-      variant={onClick ? "interactive" : "default"}
+      variant={isInteractive || onClick ? "interactive" : "default"}
       onClick={onClick}
       className="p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
     >

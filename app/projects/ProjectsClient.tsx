@@ -192,7 +192,7 @@ export default function ProjectsClient({
                         : undefined
                     }
                     team={teamMembers}
-                    onClick={() => {}}
+                    isInteractive={true}
                   />
                 </Link>
               );
