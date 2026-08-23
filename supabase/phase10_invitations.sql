@@ -84,11 +84,7 @@ create policy "Allow select invitations for participants"
   using (
     invited_by = auth.uid() or
     invitee_user_id = auth.uid() or
-    lower(invitee_email) = lower(auth.jwt()->>'email') or
-    exists (
-      select 1 from public.projects p
-      where p.id = project_id and p.client_id = auth.uid()
-    )
+    lower(invitee_email) = lower(auth.jwt()->>'email')
   );
 
 create policy "Allow insert invitations for project client"
