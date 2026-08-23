@@ -27,7 +27,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     .select("*", { count: "exact", head: true });
 
   if (adminCount === 0) {
-    redirect("/admin/setup");
+    redirect("/admin-setup");
   }
 
   // 3. Query system admin privileges for current user

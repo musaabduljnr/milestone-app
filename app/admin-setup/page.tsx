@@ -17,7 +17,7 @@ export default function AdminSetupPage() {
   React.useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }: { data: { user: { id: string; email?: string } | null } }) => {
       if (!user) {
-        router.replace("/auth/login?returnUrl=/admin/setup");
+        router.replace("/auth/login?returnUrl=/admin-setup");
       } else {
         setUserEmail(user.email || null);
         setCheckingSession(false);
