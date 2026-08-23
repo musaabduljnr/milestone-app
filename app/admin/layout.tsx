@@ -21,13 +21,22 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     redirect("/auth/login?returnUrl=/admin");
   }
 
-  // 2. Query system admin privileges
+  // 2. Check if admin table is empty (first-time setup)
+  const { count: adminCount } = await supabase
+    .from("system_admins")
+    .select("*", { count: "exact", head: true });
+
+  if (adminCount === 0) {
+    redirect("/admin/setup");
+  }
+
+  // 3. Query system admin privileges for current user
   const isAdmin = await checkIsAdmin(supabase);
   if (!isAdmin) {
     redirect("/dashboard?error=Access restricted to platform administrators.");
   }
 
-  // 3. Fetch admin profile details
+  // 4. Fetch admin profile details
   const { data: profile } = await supabase
     .from("profiles")
     .select("full_name, email, avatar_url")

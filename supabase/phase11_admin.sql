@@ -31,11 +31,23 @@ create policy "Allow select system_config for authenticated users"
   on public.system_config for select
   using (auth.role() = 'authenticated');
 
--- 5. Seed admin list using active developer profiles (for validation testing)
-insert into public.system_admins (user_id)
-select id from public.profiles
-where email in ('freelancer1@yopmail.com', 'client1@yopmail.com', 'admin@milestone.co')
-on conflict (user_id) do nothing;
+-- 5. Create claim_first_admin RPC function
+-- This can ONLY succeed when system_admins is completely empty (first-time setup).
+-- Once any admin exists, this function raises an exception and cannot be called again.
+create or replace function public.claim_first_admin()
+returns void as $$
+begin
+  -- Guard: only allow when no admins exist yet
+  if exists (select 1 from public.system_admins limit 1) then
+    raise exception 'Admin account already initialized. Contact an existing administrator.';
+  end if;
+
+  -- Insert the calling user as the first administrator
+  insert into public.system_admins (user_id)
+  values (auth.uid())
+  on conflict (user_id) do nothing;
+end;
+$$ language plpgsql security definer;
 
 -- 6. Create admin_verify_user RPC function
 create or replace function public.admin_verify_user(p_user_id uuid, p_status text)
