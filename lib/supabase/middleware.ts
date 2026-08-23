@@ -44,7 +44,6 @@ export async function updateSession(request: NextRequest) {
     url.pathname.startsWith("/client") ||
     url.pathname.startsWith("/freelancer") ||
     url.pathname.startsWith("/verification") ||
-    url.pathname.startsWith("/admin") ||
     url.pathname === "/wallet" ||
     url.pathname === "/messages" ||
     url.pathname === "/activity" ||

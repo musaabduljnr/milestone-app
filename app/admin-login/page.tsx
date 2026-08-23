@@ -1,22 +1,29 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/server";
-import { AdminSetupForm } from "./AdminSetupForm";
+import { checkIsAdmin } from "@/lib/supabase/admin";
+import { AdminLoginForm } from "./AdminLoginForm";
 
 export const revalidate = 0;
 
-export default async function AdminSetupPage() {
+export default async function AdminLoginPage() {
   const supabase = await createAdminClient();
 
-  // 1. If admin table is NOT empty, redirect to login
+  // 1. If admin table is empty, redirect to setup
   const { data: setupRequired, error: checkError } = await supabase.rpc("is_admin_setup_required");
 
   if (checkError) {
     console.error("Error checking setup requirement:", checkError);
   }
 
-  if (!setupRequired) {
-    redirect("/admin-login");
+  if (setupRequired) {
+    redirect("/admin-setup");
+  }
+
+  // 2. If already logged in, redirect to dashboard
+  const isAdmin = await checkIsAdmin(supabase);
+  if (isAdmin) {
+    redirect("/admin");
   }
 
   return (
@@ -25,44 +32,35 @@ export default async function AdminSetupPage() {
       <div className="absolute top-[-10%] right-[-10%] w-[350px] h-[350px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[350px] h-[350px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="w-full max-w-[440px] flex flex-col gap-8 z-10">
+      <div className="w-full max-w-[420px] flex flex-col gap-8 z-10">
         
         {/* Brand Header */}
         <div className="flex flex-col items-center gap-3 text-center">
           <div className="w-14 h-14 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-lg transition-transform hover:scale-105 duration-300">
             <span className="material-symbols-outlined text-[28px] font-bold">
-              admin_panel_settings
+              shield_person
             </span>
           </div>
           <div>
             <h1 className="text-2xl font-bold text-on-surface tracking-tight">
-              Create Admin Account
+              Milestone Admin
             </h1>
             <p className="text-secondary text-xs mt-1">
-              Initialize the platform operations panel credentials
+              Enter credentials to access platform operations
             </p>
           </div>
         </div>
 
-        {/* Setup card container */}
+        {/* Login form container */}
         <div className="bg-surface/85 backdrop-blur-xl border border-outline-variant/60 rounded-2xl p-6 shadow-xl flex flex-col gap-5">
-          <div className="p-3.5 rounded-xl bg-primary/5 border border-primary/10 flex gap-3">
-            <span className="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">
-              info
-            </span>
-            <p className="text-xs text-secondary leading-relaxed">
-              No administrator exists yet. Registering here will establish the master credentials. This setup form is only accessible once.
-            </p>
-          </div>
-
-          <AdminSetupForm />
+          <AdminLoginForm />
         </div>
 
         {/* Back Link */}
         <p className="text-center text-xs text-secondary leading-relaxed">
-          Already initialized?{" "}
-          <a href="/admin-login" className="text-primary font-bold hover:underline transition-all">
-            Sign In Here
+          Not an administrator?{" "}
+          <a href="/dashboard" className="text-primary font-bold hover:underline transition-all">
+            Return to Dashboard
           </a>
         </p>
 

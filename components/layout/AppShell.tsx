@@ -40,17 +40,9 @@ export const AppShell: React.FC<AppShellProps> = ({
   React.useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const { createClient } = await import("@/lib/supabase/client");
-        const supabase = createClient();
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          const { data } = await supabase
-            .from("system_admins")
-            .select("user_id")
-            .eq("user_id", session.user.id)
-            .maybeSingle();
-          setIsAdmin(!!data);
-        }
+        const { checkAdminSessionAction } = await import("@/app/admin/actions");
+        const hasSession = await checkAdminSessionAction();
+        setIsAdmin(hasSession);
       } catch (err) {
         console.error("Error checking admin privileges inside AppShell:", err);
       }
