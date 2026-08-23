@@ -973,19 +973,19 @@ DROP POLICY IF EXISTS "Allow user delete own identity documents" ON storage.obje
 
 CREATE POLICY "Allow user select own identity documents"
   ON storage.objects FOR SELECT
-  USING (bucket_id = 'identity-documents' AND (regexp_split_to_array(name, '/'))[1] = auth.uid()::text);
+  USING (bucket_id = 'identity-documents' AND auth.uid()::text = (storage.foldername(name))[1]);
 
 CREATE POLICY "Allow user insert own identity documents"
   ON storage.objects FOR INSERT
-  WITH CHECK (bucket_id = 'identity-documents' AND (regexp_split_to_array(name, '/'))[1] = auth.uid()::text);
+  WITH CHECK (bucket_id = 'identity-documents' AND auth.uid()::text = (storage.foldername(name))[1]);
 
 CREATE POLICY "Allow user update own identity documents"
   ON storage.objects FOR UPDATE
-  USING (bucket_id = 'identity-documents' AND (regexp_split_to_array(name, '/'))[1] = auth.uid()::text);
+  USING (bucket_id = 'identity-documents' AND auth.uid()::text = (storage.foldername(name))[1]);
 
 CREATE POLICY "Allow user delete own identity documents"
   ON storage.objects FOR DELETE
-  USING (bucket_id = 'identity-documents' AND (regexp_split_to_array(name, '/'))[1] = auth.uid()::text);
+  USING (bucket_id = 'identity-documents' AND auth.uid()::text = (storage.foldername(name))[1]);
 
 -- 4. Financial Access Control: Restrict fund_project to verified clients
 CREATE OR REPLACE FUNCTION public.fund_project(p_project_id uuid)
