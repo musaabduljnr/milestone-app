@@ -12,7 +12,7 @@ export interface AdminLayoutProps {
 export default async function AdminLayout({ children }: AdminLayoutProps) {
   const supabase = await createClient();
 
-  // 1. Authenticate user session
+  // 1. Get authenticated user (middleware guarantees this is not null for /admin routes)
   const {
     data: { user },
   } = await supabase.auth.getUser();

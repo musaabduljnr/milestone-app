@@ -44,14 +44,16 @@ export async function updateSession(request: NextRequest) {
     url.pathname.startsWith("/client") ||
     url.pathname.startsWith("/freelancer") ||
     url.pathname.startsWith("/verification") ||
+    url.pathname.startsWith("/admin") ||
     url.pathname === "/wallet" ||
     url.pathname === "/messages" ||
     url.pathname === "/activity" ||
     url.pathname === "/settings";
 
-  // Case 1: Unauthenticated user trying to access dashboard/payout areas -> Redirect to Login
+  // Case 1: Unauthenticated user trying to access protected areas -> Redirect to Login
   if (isDashboardRoute && !user) {
     url.pathname = "/auth/login";
+    url.searchParams.set("returnUrl", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 
