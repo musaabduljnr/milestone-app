@@ -35,6 +35,28 @@ export const AppShell: React.FC<AppShellProps> = ({
   onSignOut,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const [isAdmin, setIsAdmin] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const { createClient } = await import("@/lib/supabase/client");
+        const supabase = createClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const { data } = await supabase
+            .from("system_admins")
+            .select("user_id")
+            .eq("user_id", session.user.id)
+            .maybeSingle();
+          setIsAdmin(!!data);
+        }
+      } catch (err) {
+        console.error("Error checking admin privileges inside AppShell:", err);
+      }
+    };
+    checkAdmin();
+  }, []);
 
   const sidebarItems: SidebarItem[] = [
     { label: "Overview", icon: "dashboard", href: "/dashboard", active: activeMenuLabel === "Overview" },
@@ -45,6 +67,15 @@ export const AppShell: React.FC<AppShellProps> = ({
     { label: "Activity", icon: "history", href: "/activity", active: activeMenuLabel === "Activity" },
     { label: "Settings", icon: "settings", href: "/settings", active: activeMenuLabel === "Settings" },
   ];
+
+  if (isAdmin) {
+    sidebarItems.push({
+      label: "Admin Panel",
+      icon: "admin_panel_settings",
+      href: "/admin",
+      active: activeMenuLabel === "Admin Panel",
+    });
+  }
 
   const renderSidebarContent = () => (
     <div className="flex flex-col h-full bg-secondary dark:bg-on-secondary-fixed text-white p-6 justify-between select-none">
