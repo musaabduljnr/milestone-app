@@ -10,10 +10,27 @@ export interface AdminLayoutProps {
 }
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
-  // 1. Diagnostics check for local development
+  // 1. Diagnostics check for local development and key verification
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  let keyRole: string | null = null;
+  let isWrongKey = false;
 
-  if (!serviceRoleKey) {
+  if (serviceRoleKey) {
+    try {
+      const parts = serviceRoleKey.split(".");
+      if (parts.length === 3) {
+        const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf8"));
+        keyRole = payload.role || null;
+        if (keyRole !== "service_role") {
+          isWrongKey = true;
+        }
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  if (!serviceRoleKey || isWrongKey) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-6 select-none font-sans">
         <div className="w-full max-w-lg bg-surface border border-error/20 rounded-2xl p-8 flex flex-col gap-6 shadow-lg animate-fade-in">
@@ -24,7 +41,9 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
               </span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-on-surface">Configuration Required</h1>
+              <h1 className="text-xl font-bold text-on-surface">
+                {isWrongKey ? "Invalid Key Configured" : "Configuration Required"}
+              </h1>
               <p className="text-xs text-secondary mt-0.5">Admin Portal Configuration Error</p>
             </div>
           </div>
@@ -32,19 +51,26 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
           <div className="h-px bg-outline-variant/60" />
 
           <div className="flex flex-col gap-3">
+            {isWrongKey ? (
+              <p className="text-sm text-on-surface-variant leading-relaxed">
+                The key supplied for <code>SUPABASE_SERVICE_ROLE_KEY</code> has the role <strong>&apos;{keyRole}&apos;</strong>. You have accidentally copied the public <code>anon</code> key instead of the secret <code>service_role</code> key.
+              </p>
+            ) : (
+              <p className="text-sm text-on-surface-variant leading-relaxed">
+                The platform administrative portal requires the <strong>Supabase Service Role Key</strong> to bypass Row Level Security (RLS) policies and compile administrative audit logs.
+              </p>
+            )}
+            
             <p className="text-sm text-on-surface-variant leading-relaxed">
-              The platform administrative portal requires the <strong>Supabase Service Role Key</strong> to bypass Row Level Security (RLS) policies and compile administrative audit logs.
-            </p>
-            <p className="text-sm text-on-surface-variant leading-relaxed">
-              Please configure the key in your local environment file:
+              Please configure the correct key in your environment settings:
             </p>
             
             <div className="bg-surface-container-high border border-outline-variant/40 rounded-xl p-4 font-mono text-xs text-secondary-custom select-all overflow-x-auto whitespace-pre">
-              # .env.local{`\n`}SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+              # Environment Variable{`\n`}SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
             </div>
             
             <p className="text-[11px] text-secondary leading-relaxed">
-              You can find your <code>service_role</code> key inside your Supabase Dashboard under <strong>Project Settings &gt; API &gt; Project API Keys</strong>. Keep this key strictly secret.
+              You can find your secret <code>service_role</code> key inside your Supabase Dashboard under <strong>Project Settings &gt; API &gt; Project API Keys</strong>. Keep this key strictly secret.
             </p>
           </div>
 
