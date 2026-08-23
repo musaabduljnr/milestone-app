@@ -1,5 +1,5 @@
 import React from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 
@@ -70,7 +70,7 @@ interface KYCRecord {
 }
 
 export default async function AdminActivityPage() {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   // Fetch all entities platform-wide
   const [

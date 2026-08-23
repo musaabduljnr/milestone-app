@@ -1,5 +1,5 @@
 import React from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import Link from "next/link";
@@ -7,7 +7,7 @@ import Link from "next/link";
 export const revalidate = 0;
 
 export default async function AdminDashboardPage() {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   // 1. Fetch Users stats
   const { count: totalUsers } = await supabase.from("profiles").select("*", { count: "exact", head: true });

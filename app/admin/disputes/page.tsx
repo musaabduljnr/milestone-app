@@ -1,11 +1,11 @@
 import React from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import DisputesClient from "./DisputesClient";
 
 export const revalidate = 0;
 
 export default async function AdminDisputesPage() {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   // Query disputes from database
   const { data: disputes, error } = await supabase

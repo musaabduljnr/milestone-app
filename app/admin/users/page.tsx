@@ -1,5 +1,5 @@
 import React from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -16,7 +16,7 @@ interface UsersPageProps {
 }
 
 export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const params = await searchParams;
   const q = params.q || "";
   const role = params.role || "all";

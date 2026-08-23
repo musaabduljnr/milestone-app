@@ -1,11 +1,11 @@
 import React from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import VerificationsClient from "./VerificationsClient";
 
 export const revalidate = 0;
 
 export default async function AdminVerificationsPage() {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
 
   // Query users with pending verification
   const { data: users, error } = await supabase

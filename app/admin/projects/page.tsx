@@ -1,5 +1,5 @@
 import React from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import Link from "next/link";
@@ -54,7 +54,7 @@ interface ProjectAuditRecord {
 }
 
 export default async function AdminProjectsPage({ searchParams }: ProjectsPageProps) {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const params = await searchParams;
   const q = params.q || "";
   const status = params.status || "all";

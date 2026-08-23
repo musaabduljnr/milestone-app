@@ -1,5 +1,5 @@
 import React from "react";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import Link from "next/link";
@@ -40,7 +40,7 @@ interface MilestoneAuditRecord {
 }
 
 export default async function AdminMilestonesPage({ searchParams }: MilestonesPageProps) {
-  const supabase = await createClient();
+  const supabase = await createAdminClient();
   const params = await searchParams;
   const status = params.status || "all";
 
